@@ -1,0 +1,1683 @@
+# SALON OWNER PLATFORM
+## Frontend Design, UIUX & Quality Requirements
+
+### 1. PRODUCT OBJECTIVE
+
+The Salon Owner frontend must provide a professional business-management experience for salon owners, managers, and reception staff.
+
+The interface should allow owners to quickly
+
+- Understand today's salon performance
+- Manage bookings
+- Manage appointments
+- Manage staff
+- Manage services
+- Manage customers
+- Manage salon availability
+- Manage offers
+- Monitor reviews
+- Track earnings
+- View analytics
+- Manage notifications
+- Configure salon settings
+
+The frontend should feel like a professional SaaS business platform, not a basic CRUDadmin panel.
+
+---
+
+# 2. DESIGN DIRECTION
+
+### Overall design style
+
+Use a
+
+- Premium
+- Modern
+- Clean
+- Minimal
+- Professional
+- Business-focused
+- Spacious
+- Highly structured
+- Easy-to-scan
+
+visual language.
+
+The UI should communicate
+
+Trust + Control + Simplicity + Premium Salon Brand
+
+Avoid
+
+- Overly colorful dashboards
+- Excessive gradients
+- Excessive animations
+- Huge cards
+- Crowded tables
+- Too many buttons
+- Inconsistent spacing
+- Unnecessary popups
+- Excessive rounded elements
+- Poor contrast
+- Decorative UI that reduces usability
+
+---
+
+# 3. VISUAL DESIGN SYSTEM
+
+## 3.1 Color System
+
+Use a restrained professional palette.
+
+### Primary
+
+Use one strong brand color for
+
+- Primary buttons
+- Selected navigation
+- Active states
+- Important links
+- Key actions
+
+Recommended direction
+
+Deep purple  indigo  violet.
+
+Example
+
+Primary #5B4BDB
+
+Do not use the primary color everywhere.
+
+---
+
+### Background
+
+Main application background
+
+#F7F8FC
+
+Sidebar
+
+Dark navy  deep charcoal.
+
+Content cards
+
+White.
+
+---
+
+### Semantic colors
+
+Success
+Green
+
+Warning
+Amber
+
+Error
+Red
+
+Information
+Blue
+
+These colors should be reserved for status communication.
+
+Example
+
+```text
+Confirmed       Green
+Pending         Amber
+Cancelled       Red
+In Service      Blue
+Completed       Green
+No-show         Red
+```
+
+---
+
+# 4. TYPOGRAPHY
+
+Use a modern UI font such as
+
+- Inter
+- Manrope
+- Plus Jakarta Sans
+
+Recommended hierarchy
+
+```text
+Page Title       28–32px
+Section Heading  18–22px
+Card Heading     16–18px
+Body             14–16px
+Secondary Text   12–14px
+Button Text      14px
+Table Text       13–14px
+```
+
+Font weights
+
+```text
+Regular     400
+Medium      500
+Semibold    600
+Bold        700
+```
+
+Avoid using too many font weights.
+
+---
+
+# 5. SPACING SYSTEM
+
+Use a consistent spacing system.
+
+Recommended base unit
+
+4px
+
+Common spacing
+
+```text
+4px
+8px
+12px
+16px
+20px
+24px
+32px
+40px
+48px
+```
+
+Cards should have comfortable internal padding.
+
+Never allow elements to appear randomly positioned.
+
+---
+
+# 6. BORDER RADIUS
+
+Use consistent radius values.
+
+Recommended
+
+```text
+Small controls     6px
+Inputs             8px
+Buttons            8px
+Cards              12px
+Large containers   16px
+```
+
+Avoid extremely rounded UI unless specifically used for pillsstatus badges.
+
+---
+
+# 7. SHADOWS
+
+Use subtle shadows.
+
+Cards should primarily use
+
+- Border
+- Light shadow
+- White background
+
+Avoid heavy shadows.
+
+Example
+
+```text
+border 1px solid #E8EAF0
+box-shadow subtle
+```
+
+The interface should feel clean and premium.
+
+---
+
+# 8. OWNER APPLICATION LAYOUT
+
+Desktop layout
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│ Sidebar │              Top Header                       │
+│         ├───────────────────────────────────────────────┤
+│         │                                               │
+│         │              Main Content                     │
+│         │                                               │
+│         │                                               │
+│         │                                               │
+│         └───────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 9. SIDEBAR
+
+The sidebar should be persistent on desktop.
+
+Brand area
+
+```text
+SalonPro
+Royal Style Salon
+Owner
+```
+
+Navigation
+
+```text
+Dashboard
+
+Bookings
+Calendar
+
+Services
+Staff
+Customers
+
+Salon Profile
+Offers
+Reviews
+
+Earnings
+Analytics
+
+Notifications
+Settings
+```
+
+Bottom
+
+```text
+Help & Support
+Logout
+```
+
+---
+
+# 10. SIDEBAR UX
+
+The sidebar must support
+
+- Active page indicator
+- Icons
+- Labels
+- Collapsed mode
+- Hover states
+- Notification badges
+- Expandable submenu
+- Tooltip when collapsed
+
+Example
+
+```text
+▣ Dashboard
+▣ Bookings        4
+▣ Calendar
+▣ Services
+▣ Staff
+▣ Customers
+```
+
+The active navigation item must be immediately recognizable.
+
+---
+
+# 11. TOP HEADER
+
+Top header should contain
+
+Left
+
+```text
+Page title
+Breadcrumb
+```
+
+Right
+
+```text
+Search
+Notifications
+Help
+Owner profile
+Salon selector
+```
+
+Example
+
+```text
+Dashboard
+
+Good morning, Raj 👋
+
+                         🔍  🔔    👤 Raj ▼
+```
+
+---
+
+# 12. DASHBOARD FRONTEND
+
+The dashboard is the most important page.
+
+## Header
+
+```text
+Dashboard
+
+Good morning, Raj 👋
+Here's what's happening at your salon today.
+
+[+ Add Booking]
+```
+
+---
+
+## KPI cards
+
+Display
+
+```text
+Today's Bookings
+18
+↑ 12% from yesterday
+
+Today's Revenue
+₹8,450
+↑ 18%
+
+New Customers
+14
+↑ 7%
+
+Customer Rating
+4.8
+Based on 124 reviews
+```
+
+Each card should contain
+
+- Icon
+- Label
+- Main number
+- Comparison
+- Trend indicator
+
+---
+
+# 13. DASHBOARD CONTENT GRID
+
+Recommended layout
+
+```text
+┌──────────────────────┬──────────────────────┐
+│ Today's Appointments │ Revenue Overview     │
+│                      │                      │
+│ Booking list         │ Line chart           │
+│                      │                      │
+└──────────────────────┴──────────────────────┘
+
+┌──────────────────────┬──────────────────────┐
+│ Booking Status       │ Staff Availability   │
+│                      │                      │
+│ Donut chart          │ Staff cards          │
+└──────────────────────┴──────────────────────┘
+```
+
+---
+
+# 14. BOOKING PAGE
+
+The booking page should be optimized for operational speed.
+
+Header
+
+```text
+Bookings
+
+[Search bookings] [Filter] [+ Add Booking]
+```
+
+Tabs
+
+```text
+All
+Pending
+Confirmed
+Completed
+Cancelled
+No-show
+```
+
+---
+
+# 15. BOOKING TABLE
+
+Columns
+
+```text
+Customer
+Service
+Staff
+Date & Time
+Amount
+Payment
+Status
+Actions
+```
+
+Example
+
+```text
+Arun Kumar
+Haircut + Beard
+Kumar
+Today 530 PM
+₹400
+Paid
+Confirmed
+View
+```
+
+Actions should use
+
+- View
+- Edit
+- Reschedule
+- Cancel
+- More
+
+Avoid putting too many visible action buttons in every row.
+
+---
+
+# 16. BOOKING DETAIL DRAWER
+
+When clicking a booking, preferably open a side drawer rather than immediately navigating away.
+
+Drawer
+
+```text
+Booking #SALON12345
+
+Customer
+Arun Kumar
++91 XXXXX XXXXX
+
+Service
+Haircut + Beard
+45 minutes
+
+Staff
+Kumar
+
+Date
+12 October 2026
+
+Time
+530 PM
+
+Payment
+₹400
+Paid
+
+Status
+Confirmed
+
+[Reschedule]
+[Cancel]
+[Mark Arrived]
+```
+
+This keeps the owner in context.
+
+---
+
+# 17. CALENDAR PAGE
+
+Provide
+
+```text
+Day
+Week
+Month
+```
+
+Header
+
+```text
+Calendar
+
+ Today 
+
+[Day] [Week] [Month]
+
+[+ Add Booking]
+```
+
+Calendar must visually distinguish
+
+- Staff
+- Appointment
+- Status
+- Duration
+- Conflicts
+- Breaks
+- Unavailable periods
+
+Use drag-and-drop carefully.
+
+---
+
+# 18. SERVICES PAGE
+
+Use a professional tablecard hybrid.
+
+Header
+
+```text
+Services
+
+Manage your salon services and pricing.
+
+[+ Add Service]
+```
+
+Categories
+
+```text
+All
+Hair
+Beauty
+Spa
+Nails
+Packages
+```
+
+Columns
+
+```text
+Image
+Service
+Category
+Duration
+Price
+Status
+Actions
+```
+
+---
+
+# 19. ADDEDIT SERVICE
+
+Use a clean form.
+
+Fields
+
+```text
+Service Name
+Description
+Category
+Price
+Duration
+Service Image
+Assigned Staff
+Status
+```
+
+Bottom actions
+
+```text
+Cancel
+Save Service
+```
+
+Use inline validation.
+
+---
+
+# 20. STAFF PAGE
+
+Staff should be represented with professional profile cards.
+
+Each card
+
+```text
+[Photo]
+
+Kumar
+Senior Stylist
+
+★★★★★ 4.8
+
+8 bookings today
+
+₹4,250 revenue
+
+Available
+
+[View]
+[Edit]
+```
+
+Filters
+
+```text
+All
+Available
+Busy
+Off Today
+Inactive
+```
+
+---
+
+# 21. STAFF DETAIL PAGE
+
+Include tabs
+
+```text
+Overview
+Bookings
+Services
+Schedule
+Performance
+```
+
+Show
+
+- Staff profile
+- Working hours
+- Services
+- Today's appointments
+- Revenue
+- Rating
+- Customer feedback
+- Commission
+- Leave
+
+---
+
+# 22. CUSTOMER PAGE
+
+Customer management should use a clean data table.
+
+Columns
+
+```text
+Customer
+Phone
+Visits
+Last Visit
+Total Spent
+Favorite Service
+Rating
+Actions
+```
+
+Search
+
+```text
+Search by name or phone...
+```
+
+Filters
+
+```text
+New Customers
+Regular Customers
+Inactive
+High Value
+```
+
+---
+
+# 23. CUSTOMER DETAIL
+
+Use a profile header
+
+```text
+Arun Kumar
+18 visits
+₹12,450 spent
+★★★★★ 4.8
+```
+
+Tabs
+
+```text
+Overview
+Bookings
+Payments
+Reviews
+Notes
+```
+
+---
+
+# 24. SALON PROFILE PAGE
+
+This page should feel more visual than the management pages.
+
+Sections
+
+```text
+Salon Information
+Gallery
+Location
+Opening Hours
+Amenities
+Policies
+Contact
+```
+
+Include a live customer-facing preview.
+
+Example
+
+```text
+┌─────────────────────────────┐
+│      SALON COVER IMAGE      │
+│                             │
+│ Royal Style Salon           │
+│ ★ 4.8 (124 reviews)         │
+│                             │
+│ Chennai                     │
+│ Open until 900 PM          │
+└─────────────────────────────┘
+```
+
+---
+
+# 25. OFFERS PAGE
+
+Offer cards
+
+```text
+Haircut Weekend Offer
+
+20% OFF
+
+Valid until
+20 October 2026
+
+Used
+42 times
+
+● Active
+
+[Edit] [Pause]
+```
+
+Primary button
+
+```text
++ Create Offer
+```
+
+---
+
+# 26. REVIEWS PAGE
+
+Header
+
+```text
+Reviews
+
+4.8
+★★★★★
+
+124 Reviews
+```
+
+Show
+
+```text
+5 ★ ███████████  82%
+4 ★ ████          12%
+3 ★               4%
+2 ★               1%
+1 ★               1%
+```
+
+Review cards
+
+```text
+Priya Sharma
+★★★★★
+
+Great service and friendly staff.
+
+Hair Color
+12 Sep 2026
+
+[Reply]
+```
+
+---
+
+# 27. EARNINGS PAGE
+
+Show KPI cards
+
+```text
+Total Revenue
+₹1,25,480
+
+Online
+₹72,500
+
+Cash
+₹38,200
+
+UPI
+₹14,780
+```
+
+Charts
+
+- Revenue trend
+- Service revenue
+- Payment method distribution
+- Daily earnings
+- Monthly earnings
+
+Filters
+
+```text
+Today
+7 Days
+30 Days
+3 Months
+Custom
+```
+
+---
+
+# 28. ANALYTICS PAGE
+
+Analytics should visually explain business performance.
+
+Sections
+
+```text
+Revenue
+Bookings
+Customers
+Services
+Staff
+Marketplace
+```
+
+Important charts
+
+- Revenue trend
+- Booking trend
+- New vs returning customers
+- Most popular services
+- Staff performance
+- Peak booking hours
+- Cancellation rate
+- Customer retention
+- Profile views
+- Booking conversion
+
+---
+
+# 29. NOTIFICATIONS
+
+Use a notification center.
+
+Categories
+
+```text
+All
+Bookings
+Payments
+Reviews
+Staff
+System
+```
+
+Example
+
+```text
+● New booking received
+Arun booked Haircut + Beard
+5 minutes ago
+
+● Payment received
+₹400 received from Priya
+20 minutes ago
+
+● New review
+You received a 5-star review
+1 hour ago
+```
+
+Unread notifications must be visually distinguishable.
+
+---
+
+# 30. SETTINGS
+
+Settings navigation
+
+```text
+Account
+Salon
+Bookings
+Notifications
+Payments
+Staff Permissions
+Security
+Privacy
+Policies
+```
+
+Use a two-column layout
+
+```text
+Settings Menu     Setting Content
+────────────      ─────────────────
+
+Account            Owner information
+Salon              Salon details
+Bookings           Booking preferences
+Notifications      Notification controls
+Payments           Payment settings
+Security           Password  security
+```
+
+---
+
+# 31. BUTTON SYSTEM
+
+Primary button
+
+```text
+[+ Add Booking]
+```
+
+Secondary
+
+```text
+[Cancel]
+```
+
+Tertiary
+
+```text
+View Details
+```
+
+Danger
+
+```text
+Delete
+Cancel Booking
+```
+
+Buttons must have
+
+- Default
+- Hover
+- Active
+- Focus
+- Disabled
+- Loading
+
+states.
+
+---
+
+# 32. FORM DESIGN
+
+All forms should have
+
+- Clear labels
+- Helpful placeholders
+- Required indicators
+- Inline validation
+- Error messages
+- Success states
+- Loading states
+
+Never depend only on placeholder text as the label.
+
+Example
+
+```text
+Service Name 
+┌────────────────────────────┐
+│ Haircut                    │
+└────────────────────────────┘
+```
+
+Error
+
+```text
+Service name is required.
+```
+
+---
+
+# 33. TABLE DESIGN
+
+Tables must support
+
+- Search
+- Filters
+- Sorting
+- Pagination
+- Row hover
+- Status badges
+- Responsive behavior
+- Empty state
+
+Avoid extremely dense tables.
+
+---
+
+# 34. STATUS BADGES
+
+Use consistent status components.
+
+```text
+● Confirmed
+● Pending
+● Cancelled
+● Completed
+● No-show
+● In Service
+```
+
+Never use color alone.
+
+Include texticon as well.
+
+---
+
+# 35. MODALS AND DRAWERS
+
+Use modals only for
+
+- Confirmation
+- Small forms
+- Destructive actions
+- Important decisions
+
+Use drawers for
+
+- Booking details
+- Customer details
+- Quick editing
+
+Avoid opening unnecessary full-page screens.
+
+---
+
+# 36. EMPTY STATES
+
+Every page must have a useful empty state.
+
+Example
+
+```text
+No bookings yet
+
+Your upcoming appointments will appear here.
+
+[+ Add Booking]
+```
+
+Do not show an empty white table.
+
+---
+
+# 37. LOADING STATES
+
+Use skeleton loaders for
+
+- Dashboard cards
+- Tables
+- Customer lists
+- Staff cards
+- Calendar
+- Analytics
+
+Avoid showing a blank screen while loading.
+
+---
+
+# 38. ERROR STATES
+
+Example
+
+```text
+Something went wrong.
+
+We couldn't load your bookings.
+
+[Try Again]
+```
+
+Errors should be understandable to non-technical salon owners.
+
+Never display raw APIserver errors.
+
+---
+
+# 39. TOAST NOTIFICATIONS
+
+Use toast messages for successful actions.
+
+Examples
+
+```text
+✓ Booking confirmed
+✓ Service updated
+✓ Staff member added
+✓ Offer created
+✓ Changes saved
+```
+
+Error
+
+```text
+✕ Unable to save changes.
+Please try again.
+```
+
+---
+
+# 40. RESPONSIVE DESIGN
+
+The application must support
+
+### Desktop
+
+Primary target
+
+1440px
+1280px
+1024px
+
+### Tablet
+
+768px – 1023px
+
+### Mobile
+
+320px – 767px
+
+---
+
+# 41. MOBILE OWNER EXPERIENCE
+
+On mobile, sidebar becomes a drawer.
+
+Bottom navigation can contain
+
+```text
+Home
+Bookings
+Calendar
+Customers
+More
+```
+
+Important actions should remain accessible.
+
+Example
+
+```text
+┌─────────────────────────┐
+│ Dashboard        🔔 👤  │
+│                         │
+│ ₹8,450 Revenue          │
+│ 18 Bookings             │
+│                         │
+│ Today's Appointments    │
+│                         │
+│ Arun      1030 AM      │
+│ Priya     1130 AM      │
+│ Rahul      100 PM      │
+│                         │
+│ [+ Add Booking]         │
+│                         │
+├─────────────────────────┤
+│ Home Bookings Calendar  │
+│ Customers       More    │
+└─────────────────────────┘
+```
+
+---
+
+# 42. ACCESSIBILITY
+
+Frontend must support
+
+- Keyboard navigation
+- Visible focus states
+- Semantic HTML
+- Accessible labels
+- Sufficient color contrast
+- Screen-reader-friendly controls
+- Proper form labels
+- Accessible dialogs
+- Accessible dropdowns
+- Accessible tables
+
+Do not communicate important information through color alone.
+
+---
+
+# 43. MICRO-INTERACTIONS
+
+Animations should be subtle.
+
+Use animation for
+
+- Button feedback
+- Sidebar transitions
+- Modal opening
+- Drawer opening
+- Toast appearance
+- Loading states
+- Tab switching
+- Status updates
+
+Avoid
+
+- Excessive bouncing
+- Large page transitions
+- Constant movement
+- Distracting animations
+
+Recommended animation duration
+
+150–250ms for most interactions.
+
+---
+
+# 44. FRONTEND COMPONENT SYSTEM
+
+Build reusable components.
+
+Recommended components
+
+```text
+AppShell
+Sidebar
+Topbar
+PageHeader
+Breadcrumb
+Button
+IconButton
+Input
+Select
+SearchInput
+DatePicker
+TimePicker
+Dropdown
+Modal
+Drawer
+Tabs
+Card
+StatCard
+DataTable
+Pagination
+StatusBadge
+Avatar
+AvatarGroup
+Toast
+Tooltip
+Skeleton
+EmptyState
+ErrorState
+ConfirmDialog
+BookingCard
+StaffCard
+CustomerCard
+ServiceCard
+ReviewCard
+ChartCard
+```
+
+Do not create separate duplicated components for every page when the same UI pattern can be reused.
+
+---
+
+# 45. DESIGN CONSISTENCY
+
+Every page must use the same
+
+- Sidebar
+- Header
+- Typography
+- Buttons
+- Inputs
+- Cards
+- Status badges
+- Spacing
+- Icons
+- Tables
+- Modals
+- Notifications
+
+The user should feel that every page belongs to the same product.
+
+---
+
+# 46. ICON SYSTEM
+
+Use one consistent icon library.
+
+Recommended
+
+Lucide Icons.
+
+Examples
+
+```text
+Dashboard     LayoutDashboard
+Bookings      CalendarCheck
+Calendar      CalendarDays
+Services      Scissors
+Staff         Users
+Customers     UserRound
+Offers        Tag
+Reviews       Star
+Earnings      Wallet
+Analytics     ChartNoAxesCombined
+Notifications Bell
+Settings      Settings
+```
+
+Do not mix random icon styles.
+
+---
+
+# 47. FRONTEND PERFORMANCE
+
+The application should feel fast.
+
+Requirements
+
+- Lazy load large pages
+- Lazy load charts
+- Optimize images
+- Use responsive image sizes
+- Avoid unnecessary re-renders
+- Paginate large tables
+- Debounce search
+- Cache appropriate data
+- Use skeleton loading
+- Avoid loading the entire customer database at once
+
+Target
+
+The user should perceive the application as fast and responsive even on average internet connections.
+
+---
+
+# 48. FRONTEND SECURITY UX
+
+Never expose
+
+- Passwords
+- Authentication tokens
+- Sensitive payment information
+- Internal server errors
+
+The UI should handle
+
+- Session expiry
+- Unauthorized access
+- Permission restrictions
+- Logout
+- Secure forms
+
+If the owner's session expires
+
+```text
+Your session has expired.
+
+Please log in again.
+
+[Login]
+```
+
+---
+
+# 49. ROLE-BASED FRONTEND
+
+Different users should see different navigation and actions.
+
+### Owner
+
+Full access.
+
+### Manager
+
+```text
+Dashboard
+Bookings
+Calendar
+Services
+Staff
+Customers
+Offers
+Reviews
+Analytics
+```
+
+### Receptionist
+
+```text
+Bookings
+Calendar
+Customers
+Walk-ins
+```
+
+### Staff
+
+```text
+My Schedule
+My Bookings
+My Customers
+My Performance
+```
+
+Frontend should hide actions that the current role cannot perform.
+
+---
+
+# 50. QUALITY STANDARD
+
+Before a page is considered complete, verify
+
+### Visual Quality
+
+- Alignment is consistent
+- Spacing is consistent
+- Typography is consistent
+- No overflowing content
+- No broken icons
+- No unnecessary whitespace
+- Cards have consistent dimensions
+- Tables are readable
+- Mobile layout works
+
+### UX Quality
+
+- Main action is obvious
+- User always knows where they are
+- Navigation is predictable
+- Forms are easy to understand
+- Errors are understandable
+- Loading states exist
+- Empty states exist
+- Confirmation exists for destructive actions
+
+### Responsive Quality
+
+Test
+
+- 1440px desktop
+- 1280px desktop
+- 1024px tablet
+- 768px tablet
+- 390px mobile
+- 320px mobile
+
+### Interaction Quality
+
+Test
+
+- Hover
+- Focus
+- Click
+- Loading
+- Disabled
+- Success
+- Error
+- Empty
+- Permission denied
+
+---
+
+# 51. PREMIUM PRODUCT STANDARD
+
+The final interface should look closer to a professional SaaS product than a student dashboard.
+
+The design should communicate
+
+Everything about my salon is under control.
+
+The owner should be able to open the dashboard and immediately understand
+
+1. How many customers are coming
+2. Who is working
+3. What bookings need attention
+4. How much money am I making
+5. Are there cancellations
+6. Are customers happy
+7. How is my salon performing
+
+---
+
+# 52. FRONTEND PAGE INVENTORY
+
+The complete owner frontend should contain
+
+### Authentication
+
+1. Owner Login
+2. Owner Registration
+3. Forgot Password
+4. Reset Password
+5. OTPEmail Verification
+6. Salon Setup
+
+### Core Management
+
+7. Dashboard
+8. Bookings
+9. Booking Details
+10. Calendar
+11. Services
+12. Add Service
+13. Edit Service
+14. Staff
+15. Add Staff
+16. Staff Details
+17. Customers
+18. Customer Details
+
+### Business
+
+19. Salon Profile
+20. Gallery Management
+21. Availability
+22. Offers
+23. Reviews
+24. Earnings
+25. Analytics
+
+### Communication
+
+26. Notifications
+27. Help & Support
+
+### Configuration
+
+28. Account Settings
+29. Salon Settings
+30. Booking Settings
+31. Payment Settings
+32. Notification Settings
+33. Staff Permissions
+34. Security
+35. Privacy
+36. Policies
+
+### System states
+
+37. Loading states
+38. Empty states
+39. Error states
+40. 404 page
+41. Unauthorized page
+42. Session expired page
+
+---
+
+# 53. CORE DESIGN PRINCIPLE
+
+The owner frontend should follow this rule
+
+DISCOVER → UNDERSTAND → ACT → CONFIRM
+
+For example
+
+Owner opens Bookings
+↓
+Immediately understands pending bookings
+↓
+Opens booking
+↓
+Confirms appointment
+↓
+Receives success feedback
+
+The owner should never feel lost.
+
+---
+
+# 54. FINAL FRONTEND GOAL
+
+The Salon Owner frontend should be
+
+PREMIUM
++ SIMPLE
++ FAST
++ RESPONSIVE
++ CONSISTENT
++ ACCESSIBLE
++ DATA-DRIVEN
++ EASY TO OPERATE
+
+The customer side discovers and books.
+
+The owner side manages, operates, and grows the salon.
+
+Therefore, every frontend decision should prioritize the owner's daily business workflow rather than simply displaying data.
