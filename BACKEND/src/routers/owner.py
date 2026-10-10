@@ -1,6 +1,10 @@
+import csv
 import datetime
+import io
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -9,6 +13,7 @@ try:
     from ..models import (
         BookingModel,
         CustomerCRMModel,
+        NotificationModel,
         OfferModel,
         ReviewModel,
         SalonAvailabilityModel,
@@ -36,6 +41,7 @@ except ImportError:  # pragma: no cover - allows running as a script from src/
     from models import (
         BookingModel,
         CustomerCRMModel,
+        NotificationModel,
         OfferModel,
         ReviewModel,
         SalonAvailabilityModel,
@@ -63,7 +69,7 @@ except ImportError:  # pragma: no cover - allows running as a script from src/
 router = APIRouter(prefix="/api/owner", tags=["Salon Owner Operations"])
 
 
-def require_salon_owner(current_user: UserModel = Depends(get_current_user)):
+def require_salon_owner(current_user: Annotated[UserModel, Depends(get_current_user)]):
     if current_user.role not in ["SALON_OWNER", "SUPER_ADMIN", "MANAGER"]:
         raise HTTPException(
             status_code=403, detail="Salon owner or manager access required."
@@ -74,8 +80,8 @@ def require_salon_owner(current_user: UserModel = Depends(get_current_user)):
 # ================= 1. SALON PROFILE & SETTINGS =================
 @router.get("/salons")
 def get_owner_salons(
-    current_user: UserModel = Depends(require_salon_owner),
-    db: Session = Depends(get_db),
+    current_user: Annotated[UserModel, Depends(require_salon_owner)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     return db.query(SalonModel).filter(SalonModel.owner_id == current_user.id).all()
 
@@ -83,8 +89,8 @@ def get_owner_salons(
 @router.post("/salons", status_code=201)
 def create_salon_profile(
     payload: SalonProfileCreate,
-    current_user: UserModel = Depends(require_salon_owner),
-    db: Session = Depends(get_db),
+    current_user: Annotated[UserModel, Depends(require_salon_owner)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     if db.query(SalonModel).filter(SalonModel.slug == payload.slug).first():
         raise HTTPException(
@@ -105,8 +111,8 @@ def create_salon_profile(
 def update_salon_profile(
     salon_id: int,
     payload: SalonProfileUpdate,
-    current_user: UserModel = Depends(require_salon_owner),
-    db: Session = Depends(get_db),
+    current_user: Annotated[UserModel, Depends(require_salon_owner)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     salon = (
         db.query(SalonModel)
@@ -123,7 +129,10 @@ def update_salon_profile(
 
 # ================= 2. DASHBOARD KPI METRICS & LIVE QUEUE =================
 @router.get("/salons/{salon_id}/dashboard-stats")
-def get_dashboard_summary(salon_id: int, db: Session = Depends(get_db)):
+def get_dashboard_summary(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     today_str = datetime.date.today().isoformat()
     bookings = db.query(BookingModel).filter(BookingModel.salon_id == salon_id).all()
     today_bookings = [b for b in bookings if b.booking_date == today_str]
@@ -184,7 +193,9 @@ def get_dashboard_summary(salon_id: int, db: Session = Depends(get_db)):
 # ================= 3. BOOKING MANAGEMENT & STATUS TRANSITIONS =================
 @router.get("/salons/{salon_id}/bookings")
 def get_bookings(
-    salon_id: int, status_filter: str | None = None, db: Session = Depends(get_db)
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    status_filter: str | None = None,
 ):
     q = db.query(BookingModel).filter(BookingModel.salon_id == salon_id)
     if status_filter and status_filter != "ALL":
@@ -194,7 +205,9 @@ def get_bookings(
 
 @router.patch("/bookings/{booking_id}/status")
 def update_booking_status(
-    booking_id: int, payload: BookingStatusUpdate, db: Session = Depends(get_db)
+    booking_id: int,
+    payload: BookingStatusUpdate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     booking = db.query(BookingModel).filter(BookingModel.id == booking_id).first()
     if not booking:
@@ -210,7 +223,9 @@ def update_booking_status(
 
 @router.patch("/bookings/{booking_id}/reschedule")
 def reschedule_booking(
-    booking_id: int, payload: BookingReschedule, db: Session = Depends(get_db)
+    booking_id: int,
+    payload: BookingReschedule,
+    db: Annotated[Session, Depends(get_db)],
 ):
     booking = db.query(BookingModel).filter(BookingModel.id == booking_id).first()
     if not booking:
@@ -224,7 +239,9 @@ def reschedule_booking(
 # ================= 4. WALK-IN ENGINE =================
 @router.post("/salons/{salon_id}/walk-in", status_code=201)
 def create_walk_in(
-    salon_id: int, payload: WalkInBookingCreate, db: Session = Depends(get_db)
+    salon_id: int,
+    payload: WalkInBookingCreate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     today_str = payload.booking_date or datetime.date.today().isoformat()
     start_time_val = (
@@ -316,12 +333,19 @@ def create_walk_in(
 
 # ================= 5. SERVICES CRUD =================
 @router.get("/salons/{salon_id}/services")
-def list_services(salon_id: int, db: Session = Depends(get_db)):
+def list_services(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return db.query(ServiceModel).filter(ServiceModel.salon_id == salon_id).all()
 
 
 @router.post("/salons/{salon_id}/services", status_code=201)
-def add_service(salon_id: int, payload: ServiceCreate, db: Session = Depends(get_db)):
+def add_service(
+    salon_id: int,
+    payload: ServiceCreate,
+    db: Annotated[Session, Depends(get_db)],
+):
     service = ServiceModel(salon_id=salon_id, **payload.dict())
     db.add(service)
     db.commit()
@@ -330,7 +354,11 @@ def add_service(salon_id: int, payload: ServiceCreate, db: Session = Depends(get
 
 
 @router.delete("/salons/{salon_id}/services/{service_id}")
-def delete_service(salon_id: int, service_id: int, db: Session = Depends(get_db)):
+def delete_service(
+    salon_id: int,
+    service_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     service = (
         db.query(ServiceModel)
         .filter(ServiceModel.id == service_id, ServiceModel.salon_id == salon_id)
@@ -345,12 +373,19 @@ def delete_service(salon_id: int, service_id: int, db: Session = Depends(get_db)
 
 # ================= 6. STAFF ROSTER & SHIFTS =================
 @router.get("/salons/{salon_id}/staff")
-def list_staff(salon_id: int, db: Session = Depends(get_db)):
+def list_staff(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return db.query(StaffModel).filter(StaffModel.salon_id == salon_id).all()
 
 
 @router.post("/salons/{salon_id}/staff", status_code=201)
-def add_staff(salon_id: int, payload: StaffCreate, db: Session = Depends(get_db)):
+def add_staff(
+    salon_id: int,
+    payload: StaffCreate,
+    db: Annotated[Session, Depends(get_db)],
+):
     staff = StaffModel(salon_id=salon_id, **payload.dict())
     db.add(staff)
     db.commit()
@@ -360,7 +395,10 @@ def add_staff(salon_id: int, payload: StaffCreate, db: Session = Depends(get_db)
 
 # ================= 7. SALON AVAILABILITY ENGINE =================
 @router.get("/salons/{salon_id}/availability")
-def get_availability(salon_id: int, db: Session = Depends(get_db)):
+def get_availability(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     avail = (
         db.query(SalonAvailabilityModel)
         .filter(SalonAvailabilityModel.salon_id == salon_id)
@@ -376,7 +414,9 @@ def get_availability(salon_id: int, db: Session = Depends(get_db)):
 
 @router.put("/salons/{salon_id}/availability")
 def update_availability(
-    salon_id: int, payload: AvailabilitySettingsUpdate, db: Session = Depends(get_db)
+    salon_id: int,
+    payload: AvailabilitySettingsUpdate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     avail = (
         db.query(SalonAvailabilityModel)
@@ -394,7 +434,10 @@ def update_availability(
 
 # ================= 8. CUSTOMER MANAGEMENT / CRM =================
 @router.get("/salons/{salon_id}/customers")
-def list_customers(salon_id: int, db: Session = Depends(get_db)):
+def list_customers(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return (
         db.query(CustomerCRMModel).filter(CustomerCRMModel.salon_id == salon_id).all()
     )
@@ -405,7 +448,7 @@ def update_customer_notes(
     salon_id: int,
     customer_id: int,
     payload: CustomerNoteUpdate,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
 ):
     customer = (
         db.query(CustomerCRMModel)
@@ -423,12 +466,19 @@ def update_customer_notes(
 
 # ================= 9. OFFERS & PROMOTIONS =================
 @router.get("/salons/{salon_id}/offers")
-def list_offers(salon_id: int, db: Session = Depends(get_db)):
+def list_offers(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return db.query(OfferModel).filter(OfferModel.salon_id == salon_id).all()
 
 
 @router.post("/salons/{salon_id}/offers", status_code=201)
-def create_offer(salon_id: int, payload: OfferCreate, db: Session = Depends(get_db)):
+def create_offer(
+    salon_id: int,
+    payload: OfferCreate,
+    db: Annotated[Session, Depends(get_db)],
+):
     offer = OfferModel(salon_id=salon_id, **payload.dict())
     db.add(offer)
     db.commit()
@@ -438,13 +488,18 @@ def create_offer(salon_id: int, payload: OfferCreate, db: Session = Depends(get_
 
 # ================= 10. REVIEWS & OWNER REPLIES =================
 @router.get("/salons/{salon_id}/reviews")
-def list_reviews(salon_id: int, db: Session = Depends(get_db)):
+def list_reviews(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return db.query(ReviewModel).filter(ReviewModel.salon_id == salon_id).all()
 
 
 @router.post("/reviews/{review_id}/reply")
 def reply_to_review(
-    review_id: int, payload: ReviewReplyCreate, db: Session = Depends(get_db)
+    review_id: int,
+    payload: ReviewReplyCreate,
+    db: Annotated[Session, Depends(get_db)],
 ):
     review = db.query(ReviewModel).filter(ReviewModel.id == review_id).first()
     if not review:
@@ -456,7 +511,10 @@ def reply_to_review(
 
 # ================= 11. FINANCIALS & EARNINGS =================
 @router.get("/salons/{salon_id}/earnings")
-def get_earnings_summary(salon_id: int, db: Session = Depends(get_db)):
+def get_earnings_summary(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     bookings = (
         db.query(BookingModel)
         .filter(
@@ -481,7 +539,10 @@ def get_earnings_summary(salon_id: int, db: Session = Depends(get_db)):
 
 # ================= 12. BUSINESS ANALYTICS & MARKETPLACE VALUE =================
 @router.get("/salons/{salon_id}/analytics")
-def get_analytics(salon_id: int, db: Session = Depends(get_db)):
+def get_analytics(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return {
         "marketplace_profile_views": 1420,
         "search_appearances": 3890,
@@ -494,7 +555,10 @@ def get_analytics(salon_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/salons/{salon_id}/notifications")
-def get_salon_notifications(salon_id: int, db: Session = Depends(get_db)):
+def get_salon_notifications(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     return (
         db.query(NotificationModel)
         .filter(NotificationModel.salon_id == salon_id)
@@ -504,7 +568,10 @@ def get_salon_notifications(salon_id: int, db: Session = Depends(get_db)):
 
 
 @router.patch("/notifications/{notification_id}/read")
-def mark_notification_read(notification_id: int, db: Session = Depends(get_db)):
+def mark_notification_read(
+    notification_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     notif = (
         db.query(NotificationModel)
         .filter(NotificationModel.id == notification_id)
@@ -516,14 +583,11 @@ def mark_notification_read(notification_id: int, db: Session = Depends(get_db)):
     return {"message": "Notification marked as read"}
 
 
-import csv
-import io
-
-from fastapi.responses import StreamingResponse
-
-
 @router.get("/salons/{salon_id}/reports/download")
-def download_earnings_csv(salon_id: int, db: Session = Depends(get_db)):
+def download_earnings_csv(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     bookings = db.query(BookingModel).filter(BookingModel.salon_id == salon_id).all()
 
     output = io.StringIO()
@@ -569,7 +633,11 @@ def download_earnings_csv(salon_id: int, db: Session = Depends(get_db)):
 
 
 @router.patch("/salons/{salon_id}/offers/{offer_id}/toggle")
-def toggle_offer_status(salon_id: int, offer_id: int, db: Session = Depends(get_db)):
+def toggle_offer_status(
+    salon_id: int,
+    offer_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     """Toggle offer active/inactive status."""
     offer = (
         db.query(OfferModel)
@@ -589,7 +657,10 @@ def toggle_offer_status(salon_id: int, offer_id: int, db: Session = Depends(get_
 
 @router.patch("/salons/{salon_id}/offers/{offer_id}")
 def update_offer(
-    salon_id: int, offer_id: int, payload: dict, db: Session = Depends(get_db)
+    salon_id: int,
+    offer_id: int,
+    payload: dict,
+    db: Annotated[Session, Depends(get_db)],
 ):
     """Update discount %, fixed discount, validity, or applicable services."""
     offer = (
@@ -608,7 +679,11 @@ def update_offer(
 
 
 @router.delete("/salons/{salon_id}/offers/{offer_id}")
-def delete_offer(salon_id: int, offer_id: int, db: Session = Depends(get_db)):
+def delete_offer(
+    salon_id: int,
+    offer_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     """Permanently delete an offer/promo."""
     offer = (
         db.query(OfferModel)
@@ -622,105 +697,11 @@ def delete_offer(salon_id: int, offer_id: int, db: Session = Depends(get_db)):
     return {"message": "Offer deleted successfully"}
 
 
-# ================= REQUIREMENT 13: WALK-IN ENGINE =================
-
-
-@router.post("/salons/{salon_id}/walk-in", status_code=201)
-def create_walk_in(
-    salon_id: int, payload: WalkInBookingCreate, db: Session = Depends(get_db)
-):
-    today_str = payload.booking_date or datetime.date.today().isoformat()
-    start_time_val = (
-        payload.start_time
-        if payload.start_time != "Now"
-        else datetime.datetime.now().strftime("%I:%M %p")
-    )
-
-    # 1. Verify Salon Exists
-    salon = db.query(SalonModel).filter(SalonModel.id == salon_id).first()
-    if not salon:
-        raise HTTPException(status_code=404, detail="Salon location not found")
-
-    # 2. Check for Staff Conflict at this exact slot
-    if payload.staff_name and payload.staff_name != "Assigned Stylist":
-        conflict = (
-            db.query(BookingModel)
-            .filter(
-                BookingModel.salon_id == salon_id,
-                BookingModel.booking_date == today_str,
-                BookingModel.start_time == start_time_val,
-                BookingModel.staff_name == payload.staff_name,
-                BookingModel.status.in_(["CONFIRMED", "ARRIVED", "IN_SERVICE"]),
-            )
-            .first()
-        )
-        if conflict:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Staff member '{payload.staff_name}' already has an active appointment at {start_time_val}.",
-            )
-
-    # 3. Create the Walk-in Booking (Immediately reserves slot)
-    booking = BookingModel(
-        salon_id=salon_id,
-        customer_name=payload.customer_name,
-        customer_phone=payload.customer_phone or "Walk-in Guest",
-        service_name=payload.service_name,
-        staff_name=payload.staff_name or "Assigned Stylist",
-        booking_date=today_str,
-        start_time=start_time_val,
-        duration_minutes=payload.duration_minutes or 45,
-        amount=payload.amount,
-        booking_source="walk-in",
-        status="ARRIVED",
-        payment_status="PAID",
-        payment_method=payload.payment_method or "CASH",
-    )
-    db.add(booking)
-
-    # 4. Upsert Customer into CRM
-    clean_phone = payload.customer_phone.strip() if payload.customer_phone else None
-    crm_user = None
-    if clean_phone and clean_phone != "Walk-in Guest":
-        crm_user = (
-            db.query(CustomerCRMModel)
-            .filter(
-                CustomerCRMModel.salon_id == salon_id,
-                CustomerCRMModel.phone == clean_phone,
-            )
-            .first()
-        )
-
-    if not crm_user:
-        crm_user = CustomerCRMModel(
-            salon_id=salon_id,
-            name=payload.customer_name,
-            phone=clean_phone or f"walkin-{int(datetime.datetime.now().timestamp())}",
-            email=None,
-            total_visits=1,
-            total_spent=payload.amount,
-            favorite_service=payload.service_name,
-            favorite_staff=payload.staff_name,
-            last_visit=today_str,
-        )
-        db.add(crm_user)
-    else:
-        crm_user.total_visits += 1
-        crm_user.total_spent += payload.amount
-        crm_user.favorite_service = payload.service_name
-        crm_user.favorite_staff = payload.staff_name
-        crm_user.last_visit = today_str
-
-    db.commit()
-    db.refresh(booking)
-
-    return {
-        "message": "Walk-in appointment booked and synced to live calendar successfully",
-        "booking_id": booking.id,
-        "customer_id": crm_user.id,
-    }
 @router.get("/dashboard/earnings")
-def get_salon_earnings(salon_id: int, db: Session = Depends(get_db)):
+def get_salon_earnings(
+    salon_id: int,
+    db: Annotated[Session, Depends(get_db)],
+):
     actual_revenue = (
         db.query(func.sum(BookingModel.amount))
         .filter(BookingModel.salon_id == salon_id, BookingModel.status == "COMPLETED")
